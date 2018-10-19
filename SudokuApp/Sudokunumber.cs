@@ -56,7 +56,7 @@ namespace SudokuApp
 
         #endregion
 
-        public void Solve(int[,] array, Sudokunumber number)
+        public void PossibilityFinder(int[,] array, Sudokunumber number)
         {
             Possibilitiesarray = new Possibilities(number.number);
             var row = array.GetLength(0);

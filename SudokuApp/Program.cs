@@ -4,6 +4,7 @@ namespace SudokuApp
 {
     class Program
     {
+        static ViewController vc = new ViewController();
         public static int[,] sudokarray =
             {
                 {7,0,0,0,0,0,2,0,0 },
@@ -16,14 +17,17 @@ namespace SudokuApp
                 {5,0,0,0,0,0,1,0,6 },
                 {0,0,6,0,0,0,0,0,8 }
             };
+
         static void Main(string[] args)
         {
-
-
+            int[,] sudokuarray;
+            bool possible = true;
             var rows = sudokarray.GetLength(0);
             var columns = sudokarray.GetLength(1);
-            Sudokulist sl = new Sudokulist();
             int value;
+
+            #region(Create Lists,rows, columns and fields)
+            Sudokulist sl = new Sudokulist();
             for (int i = 0; i < rows; i++)
             {
                 sl.Sudokus.Add(new Sudokunumber(i + 1));
@@ -35,35 +39,13 @@ namespace SudokuApp
                     sl.Sudokus.Find(x => x.number == i + 1).Fields.Add(new Field(j + 1));
                 }
             }
+            #endregion
 
             for (int i = 0; i < rows; i++)
                 for (int f = 0; f < columns; f++)
                 {
                     value = sudokarray[i, f];
-                    if (value > 0)
-                    {
-                        sl.Sudokus.Find(x => x.number == value).AddValues(value, i, f);
-                    }
-                    if (f != rows - 1)
-                    {
-                        if (value == 0)
-                        {
-                            Console.Write(" ");
-                        }
-                        else
-                            Console.Write(sudokarray[i, f]);
-                        Console.Write('|');
-                    }
-                    else
-                    {
-                        if (value == 0)
-                        {
-                            Console.Write(" ");
-                        }
-                        else
-                            Console.Write(sudokarray[i, f]);
-                        Console.WriteLine();
-                    }
+                    vc.WriteandAdd(sl, value, i, f, possible);
                 }
 
 
@@ -71,41 +53,25 @@ namespace SudokuApp
             Console.ReadLine();
 
             // Implement solver number 9
-            //sl.Sudokus.Find(x => x.number == 9).Solve(sudokarray, sl.Sudokus.Find(x=>x.number==9));
-            sl.Sudokus.Find(x => x.number == 1).Solve(sudokarray, sl.Sudokus.Find(x => x.number == 1));
 
 
-            sudokarray = sl.Sudokus.Find(x => x.number == 1).Possibilitiesarray.Values;
-            for (int i = 0; i < rows; i++)
-                for (int f = 0; f < columns; f++)
-                {
-                    value = sudokarray[i, f];
-                    if (value > 0)
+
+            for (int j = 0; j < 9; j++)
+            {
+                possible = false;
+                sl.Sudokus.Find(x => x.number == j + 1).PossibilityFinder(sudokarray, sl.Sudokus.Find(x => x.number == j + 1));
+                sudokuarray = sl.Sudokus.Find(x => x.number == j+1).Possibilitiesarray.Values;
+                // Fill in 100% options
+
+                for (int i = 0; i < rows; i++)
+                    for (int f = 0; f < columns; f++)
                     {
-                        sl.Sudokus.Find(x => x.number == value).AddValues(value, i, f);
+                        value = sudokuarray[i, f];
+
+                        vc.WriteandAdd(sl, value, i, f,possible);
                     }
-                    if (f != rows - 1)
-                    {
-                        if (value == 0)
-                        {
-                            Console.Write(" ");
-                        }
-                        else
-                            Console.Write(sudokarray[i, f]);
-                        Console.Write('|');
-                    }
-                    else
-                    {
-                        if (value == 0)
-                        {
-                            Console.Write(" ");
-                        }
-                        else
-                            Console.Write(sudokarray[i, f]);
-                        Console.WriteLine();
-                    }
-                }
-            Console.ReadLine();
+                Console.ReadLine();
+            }
         }
     }
 }
