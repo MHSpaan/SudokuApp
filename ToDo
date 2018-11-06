@@ -1,0 +1,4 @@
+Loop automatically and output only end sudoku
+When no 100% option, give a signal
+branch 2 possibilities when nog 100% option available
+automatic sudoku recognitzion
