@@ -24,8 +24,7 @@ namespace SudokuApp
             this.number = nr;
             Possibilitiesarray = new Possibilities(nr);
         }
-
-        #region(Fill Fields)
+        
         public void AddValues(int number, int row, int column)
         {
             Rows.Find(x => x.Number == row + 1).Values[column] = number;
@@ -54,8 +53,6 @@ namespace SudokuApp
             else
                 Fields.Find(x => x.Number == 5).Values[row - 3, column - 3] = number;
         }
-
-        #endregion
 
         public void PossibilityFinder(int[,] array, Sudokunumber number)
         {
@@ -191,6 +188,7 @@ namespace SudokuApp
             }
             return array;
         }
+
         public int[,] FillFieldsonFields(int[,] array, Possibilities possibilities)
 
         {
