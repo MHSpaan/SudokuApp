@@ -6,7 +6,7 @@ namespace SudokuApp
 {
     class Sudokunumber
     {
-        public int number { get; set; }
+        public int Number { get; set; }
         public List<Row> Rows { get; set; }
         public List<Column> Columns { get; set; }
         public List<Field> Fields { get; set; }
@@ -21,7 +21,7 @@ namespace SudokuApp
         }
         public Sudokunumber(int nr) : this()
         {
-            this.number = nr;
+            this.Number = nr;
             Possibilitiesarray = new Possibilities(nr);
         }
         
@@ -56,7 +56,7 @@ namespace SudokuApp
 
         public void PossibilityFinder(int[,] array, Sudokunumber number)
         {
-            Possibilitiesarray = new Possibilities(number.number);
+            Possibilitiesarray = new Possibilities(number.Number);
             var row = array.GetLength(0);
             var column = array.GetLength(1);
             for (int i = 0; i < row; i++)
@@ -72,7 +72,7 @@ namespace SudokuApp
                         bool ispresent = false;
                         foreach (var nr in number.Rows.Find(x => x.Number == i + 1).Values)
                         {
-                            if (nr == number.number)
+                            if (nr == number.Number)
                             {
                                 ispresent = true;
                             }
@@ -80,7 +80,7 @@ namespace SudokuApp
 
                         foreach (var nr in number.Columns.Find(x => x.Number == f + 1).Values)
                         {
-                            if (nr == number.number)
+                            if (nr == number.Number)
                             {
                                 ispresent = true;
                             }
@@ -115,7 +115,7 @@ namespace SudokuApp
 
                         foreach (var nr in number.Fields.Find(x => x.Number == fieldnumber).Values)
                         {
-                            if (nr == number.number)
+                            if (nr == number.Number)
                             {
                                 ispresent = true;
                             }
@@ -134,31 +134,49 @@ namespace SudokuApp
                 }
         }
 
-        public int[,] FillFieldsonRows(int[,] array, Possibilities possibilities)
+        public List<int[,]> FillFieldsonRows(int[,] array, Possibilities possibilities, int possibillities)
         {
+            List<int[,]> sudokuarrays = new List<int[,]>();
             int sum = 0;
-            int[] coords = { 0, 0 };
+            List<int[]> coords = new List<int[]>();
             var value = possibilities.Values;
             for (int i = 0; i < value.GetLength(0); i++)
             {
+                coords.Clear();
                 for (int j = 0; j < value.GetLength(1); j++)
                 {
                     if (value[i, j] == 1)
                     {
-                        coords[0] = i;
-                        coords[1] = j;
+                        coords.Add(new int[]{i,j});
                         sum++;
                     }
 
                 }
-                if (sum == 1)
+                if (sum == possibillities)
+
                 {
-                    array[coords[0], coords[1]] = possibilities.Number;
+                    int[,] tmparray = new int[9, 9];
+                    int position = 0;
+                    foreach (var item in coords)
+                    {
+                        for (int h = 0; h < 9; h++)
+                        {
+                            for (int k = 0; k < 9; k++)
+                            {
+                                tmparray[k,h] = array[k,h];
+                            }
+                        }
+                        // reference type, cant change content...
+                        sudokuarrays.Add(tmparray);
+                        sudokuarrays[position].SetValue(possibilities.Number, item[0], item[1]);
+                        tmparray = new int[9,9];
+                        position++;
+                    }
                 }
                 sum = 0;
             }
-
-            return array;
+            return sudokuarrays;
+            
         }
 
         public int[,] FillFieldsonColumns(int[,] array, Possibilities possibilities)
