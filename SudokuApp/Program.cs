@@ -4,22 +4,23 @@ namespace SudokuApp
 {
     class Program
     {
+        static PossibilitiesController pc = new PossibilitiesController();
         static ViewController vc = new ViewController();
         static readonly int size = 9;
         #region(Sudoku Array)
         //Very Easy
-        //public static int[,] sudokuarray =
-        //      {
-        //            {0,0,7,0,8,0,4,0,9 },
-        //            {0,5,1,0,0,2,0,6,0 },
-        //            {8,0,0,3,1,0,7,0,0 },
-        //            {0,0,0,4,0,8,0,9,0 },
-        //            {0,6,2,9,0,0,1,0,3 },
-        //            {3,0,9,6,0,0,5,7,4 },
-        //            {0,1,0,0,9,0,0,3,0 },
-        //            {7,0,0,0,0,5,8,0,2 },
-        //            {6,2,4,0,7,3,0,5,0 }
-        //      };
+        public static int[,] sudokuarray =
+              {
+                    {0,0,7,0,8,0,4,0,9 },
+                    {0,5,1,0,0,2,0,6,0 },
+                    {8,0,0,3,1,0,7,0,0 },
+                    {0,0,0,4,0,8,0,9,0 },
+                    {0,6,2,9,0,0,1,0,3 },
+                    {3,0,9,6,0,0,5,7,4 },
+                    {0,1,0,0,9,0,0,3,0 },
+                    {7,0,0,0,0,5,8,0,2 },
+                    {6,2,4,0,7,3,0,5,0 }
+              };
 
         // Easy
         //public static int[,] sudokuarray =
@@ -37,18 +38,18 @@ namespace SudokuApp
         //      };
 
         // Intermediate
-        public static int[,] sudokuarray =
-      {
-                              {5,7,0,0,4,0,0,0,0 },
-                              {1,0,3,0,0,8,4,0,0 },
-                              {0,0,0,0,0,0,0,0,5 },
-                              {0,6,0,0,0,0,0,0,4 },
-                              {0,9,0,2,1,0,0,5,0 },
-                              {0,0,0,0,9,3,0,0,0 },
-                              {0,0,0,8,3,1,2,0,0 },
-                              {0,0,4,0,0,0,0,0,3 },
-                              {0,0,0,7,0,0,0,0,6 }
-                };
+        //  public static int[,] sudokuarray =
+        //{
+        //                        {5,7,0,0,4,0,0,0,0 },
+        //                        {1,0,3,0,0,8,4,0,0 },
+        //                        {0,0,0,0,0,0,0,0,5 },
+        //                        {0,6,0,0,0,0,0,0,4 },
+        //                        {0,9,0,2,1,0,0,5,0 },
+        //                        {0,0,0,0,9,3,0,0,0 },
+        //                        {0,0,0,8,3,1,2,0,0 },
+        //                        {0,0,4,0,0,0,0,0,3 },
+        //                        {0,0,0,7,0,0,0,0,6 }
+        //          };
 
         // Hard
         //  public static int[,] sudokuarray =
@@ -120,10 +121,10 @@ namespace SudokuApp
                     for (int j = 1; j <= size; j++)
                     {
                         sn = sl.Sudokus.Find(x => x.Number == j);
-                        PossibilityArrayValues = sn.Possibilitiesarray.Values;
-                        PossibilityArrayValues = vc.FillArray1Option(sn, sudokuarray,1);
+                        sn.Possibilitiesarray = pc.PossibilityFinder(sudokuarray,sn);
+                        PossibilityArrayValues = pc.FillArray1Option(sn, sudokuarray,1);
 
-                        counter = vc.CountPossibilities(PossibilityArrayValues);
+                        counter = pc.CountPossibilities(PossibilityArrayValues);
 
                         //vc.ConsoleSudokuDisplay(rows, columns, PossibilityArrayValues);
                         //Console.ReadLine();
@@ -141,7 +142,7 @@ namespace SudokuApp
 
                     vc.ConsoleSudokuDisplay(rows, columns, sudokuarray);
                     Console.ReadLine();
-                    PossibilityArrayValues = vc.FillArray2Options(sn, sudokuarray, 2);
+                    PossibilityArrayValues = pc.FillArray2Options(sn, sudokuarray, 2);
                     
 
                 }

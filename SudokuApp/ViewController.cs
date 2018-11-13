@@ -6,7 +6,7 @@ namespace SudokuApp
 {
     class ViewController
     {
-        internal List<int[,]> sudokuarrays = new List<int[,]>();
+
         public void ConsoleSudokuDisplay(int rows, int columns, int[,] sudokuarray)
         {
             for (int i = 0; i < rows; i++)
@@ -51,45 +51,6 @@ namespace SudokuApp
                 }
         }
 
-        internal int[,] FillArray1Option(Sudokunumber sn, int[,] sudokuarray, int possibillities)
-        {
-            sn.PossibilityFinder(sudokuarray, sn);
-            var possibilitiesarray = sn.Possibilitiesarray;
-            List<int[,]> tmplist = sn.FillFieldsonRows(sudokuarray, possibilitiesarray, possibillities);
-            if (tmplist.Count != 0)
-            {
-                sudokuarray = tmplist[0];
-            }
-            sudokuarray = sn.FillFieldsonColumns(sudokuarray, possibilitiesarray);
-            sudokuarray = sn.FillFieldsonFields(sudokuarray, possibilitiesarray);
-            return possibilitiesarray.Values;
-        }
 
-        internal int[,] FillArray2Options(Sudokunumber sn, int[,] sudokuarray, int possibillities)
-        {
-            sn.PossibilityFinder(sudokuarray, sn);
-            var possibilitiesarray = sn.Possibilitiesarray;
-            List<int[,]> sudokus = new List<int[,]>();
-            sudokus = sn.FillFieldsonRows(sudokuarray, possibilitiesarray, possibillities);
-            foreach (var item in sudokus)
-            {
-                sudokuarrays.Add(item);
-
-                ConsoleSudokuDisplay(9, 9, item);
-            }
-            sudokuarray = sn.FillFieldsonColumns(sudokuarray, possibilitiesarray);
-            sudokuarray = sn.FillFieldsonFields(sudokuarray, possibilitiesarray);
-            return possibilitiesarray.Values;
-        }
-
-        internal int CountPossibilities(int[,] PossibilityArrayValues)
-        {
-            int counter = 0;
-            foreach (var item in PossibilityArrayValues)
-            {
-                counter += item;
-            }
-            return counter;
-        }
     }
 }

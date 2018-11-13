@@ -27,6 +27,7 @@ namespace SudokuApp
         
         public void AddValues(int number, int row, int column)
         {
+
             Rows.Find(x => x.Number == row + 1).Values[column] = number;
             Columns.Find(x => x.Number == column + 1).Values[row] = number;
             if (column < 3)
@@ -52,86 +53,6 @@ namespace SudokuApp
                 Fields.Find(x => x.Number == 8).Values[row - 6, column - 3] = number;
             else
                 Fields.Find(x => x.Number == 5).Values[row - 3, column - 3] = number;
-        }
-
-        public void PossibilityFinder(int[,] array, Sudokunumber number)
-        {
-            Possibilitiesarray = new Possibilities(number.Number);
-            var row = array.GetLength(0);
-            var column = array.GetLength(1);
-            for (int i = 0; i < row; i++)
-                for (int f = 0; f < column; f++)
-                {
-                    if (array[i, f] > 0)
-                    {
-                        Possibilitiesarray.Values[i, f] = 0;
-                    }
-                    else
-                    {
-
-                        bool ispresent = false;
-                        foreach (var nr in number.Rows.Find(x => x.Number == i + 1).Values)
-                        {
-                            if (nr == number.Number)
-                            {
-                                ispresent = true;
-                            }
-                        }
-
-                        foreach (var nr in number.Columns.Find(x => x.Number == f + 1).Values)
-                        {
-                            if (nr == number.Number)
-                            {
-                                ispresent = true;
-                            }
-                        }
-
-                        #region(decide fieldnumber)
-                        int fieldnumber;
-                        if (f < 3)
-                            if (i < 3)
-                                fieldnumber = 1;
-                            else if (i > 5)
-                                fieldnumber = 7;
-                            else
-                                fieldnumber = 4;
-
-                        else if (f > 5)
-                            if (i < 3)
-                                fieldnumber = 3;
-                            else if (i > 5)
-                                fieldnumber = 9;
-                            else
-                                fieldnumber = 6;
-
-                        else
-                            if (i < 3)
-                            fieldnumber = 2;
-                        else if (i > 5)
-                            fieldnumber = 8;
-                        else
-                            fieldnumber = 5;
-                        #endregion
-
-                        foreach (var nr in number.Fields.Find(x => x.Number == fieldnumber).Values)
-                        {
-                            if (nr == number.Number)
-                            {
-                                ispresent = true;
-                            }
-                        }
-
-                        if (ispresent)
-                        {
-                            Possibilitiesarray.Values[i, f] = 0;
-                        }
-                        else
-                        {
-                            Possibilitiesarray.Values[i, f] = 1;
-                        }
-
-                    }
-                }
         }
 
         public List<int[,]> FillFieldsonRows(int[,] array, Possibilities possibilities, int possibillities)
@@ -166,11 +87,17 @@ namespace SudokuApp
                                 tmparray[k,h] = array[k,h];
                             }
                         }
-                        // reference type, cant change content...
-                        sudokuarrays.Add(tmparray);
-                        sudokuarrays[position].SetValue(possibilities.Number, item[0], item[1]);
-                        tmparray = new int[9,9];
-                        position++;
+                        if (sum == 1)
+                        {
+                            array[item[0], item[1]] = possibilities.Number;
+                        }
+                        else if (sum == 2)
+                        {
+                            sudokuarrays.Add(tmparray);
+                            sudokuarrays[position].SetValue(possibilities.Number, item[0], item[1]);
+                            tmparray = new int[9, 9];
+                            position++;
+                        }
                     }
                 }
                 sum = 0;
