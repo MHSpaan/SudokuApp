@@ -7,10 +7,10 @@ namespace SudokuApp
     class ViewController
     {
 
-        public void ConsoleSudokuDisplay(int rows, int columns, int[,] sudokuarray)
+        public void ConsoleSudokuDisplay(int[,] sudokuarray)
         {
-            for (int i = 0; i < rows; i++)
-                for (int f = 0; f < columns; f++)
+            for (int i = 0; i < sudokuarray.GetLength(0); i++)
+                for (int f = 0; f < sudokuarray.GetLength(1); f++)
                 {
                     int value = sudokuarray[i, f];
 
@@ -37,20 +37,6 @@ namespace SudokuApp
                 }
             Console.WriteLine();
         }
-
-        internal void UpdateValues(int rows, int columns, Sudokulist sl, int[,] sudokuarray)
-        {
-            for (int i = 0; i < rows; i++)
-                for (int f = 0; f < columns; f++)
-                {
-                    int value = sudokuarray[i, f];
-                    if (value > 0)
-                    {
-                        sl.Sudokus.Find(x => x.Number == value).AddValues(value, i, f);
-                    }
-                }
-        }
-
 
     }
 }
