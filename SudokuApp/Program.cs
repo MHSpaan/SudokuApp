@@ -7,7 +7,6 @@ namespace SudokuApp
 {
     class Program
     {
-        static PossibilitiesController pc = new PossibilitiesController();
         static ViewController vc = new ViewController();
         static UpdateController uc = new UpdateController();
         static Sudokunumber sn = new Sudokunumber();
@@ -145,7 +144,6 @@ namespace SudokuApp
                 // first time 50%
                 foreach (var item in arraylists.OutcomesList)
                 {
-                    sw.Start();
                     uc.CreateList(item);
                     for (int i = 1; i <= size; i++)
                     {
@@ -177,6 +175,7 @@ namespace SudokuApp
                     // second time 50%
                     foreach (var item2 in item.OutcomesList)
                     {
+                        sw.Start();
                         uc.CreateList(item2);
                         for (int i = 1; i <= size; i++)
                         {
@@ -231,11 +230,11 @@ namespace SudokuApp
                         }
 
                         item2.Dispose();
+                        sw.Stop();
+                        Console.WriteLine(sw.ElapsedMilliseconds);
+                        sw.Reset();
                     }
                     item.Dispose();
-                    sw.Stop();
-                    Console.WriteLine(sw.ElapsedMilliseconds);
-                    sw.Reset();
                 }
                 if (!solved)
                 {
