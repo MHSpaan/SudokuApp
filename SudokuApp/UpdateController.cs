@@ -296,8 +296,6 @@ namespace SudokuApp
                 sn.Fields.Find(x => x.Number == 5).Values[row - 3, column - 3] = number;
         }
 
-
-
         public void PossibilityFinder(int[,] array, Sudokunumber number)
         {
             Possibilities Possibilitiesarray = new Possibilities(number.Number);
@@ -448,7 +446,7 @@ namespace SudokuApp
             return temparray;
         }
 
-        internal bool Filling(Sudokulist sl, int[,] sudokuarray)
+        internal bool Filling(OutcomeList arraylists)
         {
             var checkcounter = 0;
             var counter = 0;
@@ -459,16 +457,16 @@ namespace SudokuApp
 
                 for (int j = 1; j <= 9; j++)
                 {
-                    var sn = sl.Sudokus.Find(x => x.Number == j);
-                    PossibilityFinder(sudokuarray, sn);
+                    var sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == j);
+                    PossibilityFinder(arraylists.Outcomes, sn);
                     var asda = sn.Possibilitiesarray;
-                    FillArray1Option(sn, sudokuarray, 1);
+                    FillArray1Option(sn, arraylists.Outcomes, 1);
 
 
-                    UpdateValues(sudokuarray, sn);
+                    UpdateValues(arraylists.Outcomes, sn);
 
                 }
-                counter = CountZeros(sudokuarray);
+                counter = CountZeros(arraylists.Outcomes);
                 if (counter == 0)
                 {
                     return true;
@@ -476,6 +474,25 @@ namespace SudokuApp
             }
             while (counter != checkcounter && counter > 0);
             return false;
+        }
+
+        internal void CreateList(OutcomeList arraylists)
+        {
+            var size = arraylists.Outcomes.GetLength(0);
+            Sudokulist sl = new Sudokulist();
+            for (int i = 1; i <= size; i++)
+            {
+                sl.Sudokus.Add(new Sudokunumber(i));
+                for (int j = 1; j <= size; j++)
+                {
+
+                    sl.Sudokus.Find(x => x.Number == i).Rows.Add(new Row(j, size));
+                    sl.Sudokus.Find(x => x.Number == i).Columns.Add(new Column(j, size));
+                    sl.Sudokus.Find(x => x.Number == i).Fields.Add(new Field(j));
+                }
+            }
+            arraylists.Sudokulist = sl;
+
         }
     }
 }

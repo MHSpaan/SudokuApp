@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SudokuApp
 {
-    class Sudokulist
+    class Sudokulist:IDisposable
     {
 
         public List<Sudokunumber> Sudokus { get; set; }
@@ -14,6 +14,9 @@ namespace SudokuApp
             Sudokus = new List<Sudokunumber>();
         }
 
-
+        public void Dispose()
+        {
+            Sudokus.Clear();
+        }
     }
 }
