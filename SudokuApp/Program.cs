@@ -49,15 +49,15 @@ namespace SudokuApp
         public static int[,] sudokuarray =
       {
 
-                                        {6,0,3,9,0,0,7,0,0 },
-                                        {0,0,2,0,0,0,8,0,0 },
-                                        {5,0,8,0,0,0,0,0,3 },
-                                        {0,0,0,8,0,4,2,0,9 },
-                                        {0,0,5,7,0,9,0,0,0 },
-                                        {0,0,0,0,2,6,0,0,5 },
-                                        {0,0,0,4,0,0,0,0,1 },
-                                        {3,0,0,5,0,8,0,6,0 },
-                                        {0,4,0,0,0,0,0,0,0 }
+                                        {8,0,0,5,0,0,0,0,0 },
+                                        {2,0,0,0,0,0,0,5,0 },
+                                        {4,3,0,0,0,7,0,0,9 },
+                                        {0,0,0,4,0,0,0,0,7 },
+                                        {0,0,0,0,8,3,5,0,0 },
+                                        {0,4,0,0,2,0,6,0,1 },
+                                        {0,0,8,0,0,0,3,0,0 },
+                                        {0,0,0,0,6,0,0,0,5 },
+                                        {0,0,0,0,0,2,0,0,0 }
                           };
 
         // Hard
@@ -101,7 +101,6 @@ namespace SudokuApp
         //                                                                {0,9,0,0,0,0,4,0,0 }
         //                                                  };
         #endregion
-        static OutcomeList arraylists = new OutcomeList(sudokuarray);
         static OutcomeList outcomearray = new OutcomeList(sudokuarray);
         static void Main(string[] args)
         {
@@ -109,7 +108,7 @@ namespace SudokuApp
             var columns = sudokuarray.GetLength(1);
             var sum = 0;
 
-            vc.ConsoleSudokuDisplay(arraylists.Outcomes);
+            vc.ConsoleSudokuDisplay(outcomearray.Outcomes);
             Console.ReadLine();
 
 
@@ -122,27 +121,68 @@ namespace SudokuApp
             }
             else
             {
+                uc.PreFilling(outcomearray);
                 foreach (var item in outcomearray.OutcomesList)
                 {
                     uc.Filling(item);
+
                     if (item.Solved)
                     {
-
                         sudokuarray = item.Outcomes;
                         goto end;
                     }
                     sum++;
                 }
+                outcomearray.OutcomesList = outcomearray.OutcomesList.OrderBy(x => x.amountofZeros).ToList();
+                if (outcomearray.OutcomesList.Count > 2)
+                {
+                    outcomearray.OutcomesList.RemoveRange(5, outcomearray.OutcomesList.Count - 5);
+                }
                 foreach (var item in outcomearray.OutcomesList)
                 {
-                    foreach (var item2 in item.OutcomesList)
+                    uc.PreFilling(item);
+
+                    foreach (var item2 in item.OutcomesList.OrderBy(x => x.amountofZeros))
                     {
                         uc.Filling(item2);
+
                         if (item2.Solved)
                         {
 
                             sudokuarray = item2.Outcomes;
                             goto end;
+                        }
+                        sum++;
+                    }
+                    item.OutcomesList = item.OutcomesList.OrderBy(x => x.amountofZeros).ToList();
+                    if (item.OutcomesList.Count > 3)
+                    {
+                        item.OutcomesList.RemoveRange(5, item.OutcomesList.Count - 5);
+                    }
+                }
+
+
+                foreach (var item in outcomearray.OutcomesList.OrderBy(x => x.amountofZeros))
+                {
+
+                    foreach (var item2 in item.OutcomesList.OrderBy(x => x.amountofZeros))
+                    {
+                        uc.PreFilling(item2);
+                        foreach (var item3 in item2.OutcomesList.OrderBy(x => x.amountofZeros))
+                        {
+                            uc.Filling(item3);
+                            if (item3.Solved)
+                            {
+
+                                sudokuarray = item3.Outcomes;
+                                goto end;
+                            }
+                        }
+                        item2.OutcomesList = item2.OutcomesList.OrderBy(x => x.amountofZeros).ToList();
+                        if (item2.OutcomesList.Count > 4)
+                        {
+                            item2.OutcomesList.RemoveRange(5, item2.OutcomesList.Count - 5);
+
                         }
                         sum++;
                     }
@@ -153,6 +193,7 @@ namespace SudokuApp
 
 
             vc.ConsoleSudokuDisplay(sudokuarray);
+
             Console.ReadLine();
         }
     }

@@ -225,6 +225,8 @@ namespace SudokuApp
             return sudokuarrays;
         }
 
+
+
         internal bool FillingSudokuLoop(Sudokulist sl, int[,] sudokuarray)
         {
             var counter = 0;
@@ -468,7 +470,6 @@ namespace SudokuApp
 
                     sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == j);
                     PossibilityFinder(arraylists.Outcomes, sn);
-                    var asda = sn.Possibilitiesarray;
                     FillArray1Option(sn, arraylists.Outcomes, 1);
 
 
@@ -486,17 +487,25 @@ namespace SudokuApp
             }
             else
             {
+                arraylists.amountofZeros = CountZeros(arraylists.Outcomes);
                 arraylists.Solved = false;
-                for (int i = 1; i <= size; i++)
-                {
-                    sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == i);
-                    UpdateValues(arraylists.Outcomes, sn);
-                    FillArray2Options(arraylists, sn, arraylists.Outcomes, 2);
-                }
+
             }
+
 
         }
 
+        internal void PreFilling(OutcomeList arraylists)
+        {
+            Sudokunumber sn = new Sudokunumber();
+            int size = arraylists.Outcomes.GetLength(0);
+            for (int i = 1; i <= size; i++)
+            {
+                sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == i);
+                UpdateValues(arraylists.Outcomes, sn);
+                FillArray2Options(arraylists, sn, arraylists.Outcomes, 2);
+            }
+        }
 
         internal void CreateList(OutcomeList arraylists)
         {
