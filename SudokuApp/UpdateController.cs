@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SudokuApp
 {
     class UpdateController
     {
-        //static List<int[,]> sudokuarrays;
+        static Stopwatch sw = new Stopwatch();
         ViewController vc = new ViewController();
 
         public List<int[,]> FillFieldsonRows(Sudokunumber sn, int[,] array, int possibillities)
@@ -393,7 +395,7 @@ namespace SudokuApp
             FillFieldsonFields(sn, sudokuarray, possibillities);
         }
 
-        internal List<int[,]> FillArray2Options(Sudokunumber sn, int[,] sudokuarray, int possibillities)
+        internal void FillArray2Options(OutcomeList outcomelist, Sudokunumber sn, int[,] sudokuarray, int possibillities)
         {
             List<int[,]> sudokuarrays = new List<int[,]>();
             var possibilitiesarray = sn.Possibilitiesarray;
@@ -401,19 +403,21 @@ namespace SudokuApp
             sudokus = FillFieldsonRows(sn, sudokuarray, possibillities);
             foreach (var item in sudokus)
             {
-                sudokuarrays.Add(item);
+                OutcomeList outcomes = new OutcomeList(item);
+                outcomelist.OutcomesList.Add(outcomes);
             }
             sudokus = FillFieldsonColumns(sn, sudokuarray, possibillities);
             foreach (var item in sudokus)
             {
-                sudokuarrays.Add(item);
+                OutcomeList outcomes = new OutcomeList(item);
+                outcomelist.OutcomesList.Add(outcomes);
             }
             sudokus = FillFieldsonFields(sn, sudokuarray, possibillities);
             foreach (var item in sudokus)
             {
-                sudokuarrays.Add(item);
+                OutcomeList outcomes = new OutcomeList(item);
+                outcomelist.OutcomesList.Add(outcomes);
             }
-            return sudokuarrays;
         }
 
         internal int CountZeros(int[,] array)
@@ -446,18 +450,23 @@ namespace SudokuApp
             return temparray;
         }
 
-        internal bool Filling(OutcomeList arraylists)
+        internal void Filling(OutcomeList arraylists)
         {
+            var size = arraylists.Outcomes.GetLength(0);
+            Sudokunumber sn = new Sudokunumber();
             var checkcounter = 0;
             var counter = 0;
             do
             {
                 checkcounter = counter;
                 counter = 0;
-
-                for (int j = 1; j <= 9; j++)
+                CreateList(arraylists);
+                for (int j = 1; j <= size; j++)
                 {
-                    var sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == j);
+                    sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == j);
+                    UpdateValues(arraylists.Outcomes, sn);
+
+                    sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == j);
                     PossibilityFinder(arraylists.Outcomes, sn);
                     var asda = sn.Possibilitiesarray;
                     FillArray1Option(sn, arraylists.Outcomes, 1);
@@ -467,14 +476,27 @@ namespace SudokuApp
 
                 }
                 counter = CountZeros(arraylists.Outcomes);
-                if (counter == 0)
-                {
-                    return true;
-                }
+
             }
             while (counter != checkcounter && counter > 0);
-            return false;
+            if (counter == 0)
+            {
+                arraylists.Solved = true;
+                arraylists.Dispose();
+            }
+            else
+            {
+                arraylists.Solved = false;
+                for (int i = 1; i <= size; i++)
+                {
+                    sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == i);
+                    UpdateValues(arraylists.Outcomes, sn);
+                    FillArray2Options(arraylists, sn, arraylists.Outcomes, 2);
+                }
+            }
+
         }
+
 
         internal void CreateList(OutcomeList arraylists)
         {

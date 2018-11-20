@@ -10,6 +10,7 @@ namespace SudokuApp
         UpdateController uc = new UpdateController();
 
         public int[,] Outcomes { get; set; }
+        public bool Solved { get; set; }
         public int amountofZeros { get; set; }
         public Sudokulist Sudokulist { get; set; }
         public List<OutcomeList> OutcomesList { get; set; }

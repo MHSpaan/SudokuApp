@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SudokuApp
 {
@@ -45,32 +46,33 @@ namespace SudokuApp
         //      };
 
         // Intermediate
-        //  public static int[,] sudokuarray =
-        //{
-        //                                  {5,7,0,0,4,0,0,0,0 },
-        //                                  {1,0,3,0,0,8,4,0,0 },
-        //                                  {0,0,0,0,0,0,0,0,5 },
-        //                                  {0,6,0,0,0,0,0,0,4 },
-        //                                  {0,9,0,2,1,0,0,5,0 },
-        //                                  {0,0,0,0,9,3,0,0,0 },
-        //                                  {0,0,0,8,3,1,2,0,0 },
-        //                                  {0,0,4,0,0,0,0,0,3 },
-        //                                  {0,0,0,7,0,0,0,0,6 }
-        //                    };
-
-        // Hard
         public static int[,] sudokuarray =
       {
-                                                {7,0,9,0,8,5,0,0,1 },
-                                                {0,0,0,0,0,0,0,0,0 },
-                                                {1,0,3,0,0,0,6,0,0 },
-                                                {0,0,0,2,6,0,0,0,0 },
-                                                {0,0,7,0,0,0,0,8,5 },
-                                                {0,0,0,0,0,4,0,3,0 },
-                                                {0,8,4,6,9,0,0,0,0 },
-                                                {3,0,0,0,0,0,0,1,0 },
-                                                {0,0,0,0,5,0,0,0,0 }
-                                  };
+
+                                        {6,0,3,9,0,0,7,0,0 },
+                                        {0,0,2,0,0,0,8,0,0 },
+                                        {5,0,8,0,0,0,0,0,3 },
+                                        {0,0,0,8,0,4,2,0,9 },
+                                        {0,0,5,7,0,9,0,0,0 },
+                                        {0,0,0,0,2,6,0,0,5 },
+                                        {0,0,0,4,0,0,0,0,1 },
+                                        {3,0,0,5,0,8,0,6,0 },
+                                        {0,4,0,0,0,0,0,0,0 }
+                          };
+
+        // Hard
+        //  public static int[,] sudokuarray =
+        //{
+        //                                            {7,0,9,0,8,5,0,0,1 },
+        //                                            {0,0,0,0,0,0,0,0,0 },
+        //                                            {1,0,3,0,0,0,6,0,0 },
+        //                                            {0,0,0,2,6,0,0,0,0 },
+        //                                            {0,0,7,0,0,0,0,8,5 },
+        //                                            {0,0,0,0,0,4,0,3,0 },
+        //                                            {0,8,4,6,9,0,0,0,0 },
+        //                                            {3,0,0,0,0,0,0,1,0 },
+        //                                            {0,0,0,0,0,0,0,0,0 }
+        //                              };
 
         // Very Hard
         //  public static int[,] sudokuarray =
@@ -100,149 +102,56 @@ namespace SudokuApp
         //                                                  };
         #endregion
         static OutcomeList arraylists = new OutcomeList(sudokuarray);
+        static OutcomeList outcomearray = new OutcomeList(sudokuarray);
         static void Main(string[] args)
         {
             var rows = sudokuarray.GetLength(0);
             var columns = sudokuarray.GetLength(1);
-
-            uc.CreateList(arraylists);
-
-            for (int i = 1; i <= size; i++)
-            {
-                sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == i);
-                uc.UpdateValues(arraylists.Outcomes, sn);
-            }
-
+            var sum = 0;
 
             vc.ConsoleSudokuDisplay(arraylists.Outcomes);
             Console.ReadLine();
 
-            bool solved = false;
-            // 100%
-            while (!solved)
+
+
+
+            uc.Filling(outcomearray);
+            if (outcomearray.Solved)
             {
-
-                solved = uc.Filling(arraylists);
-                if (solved)
+                sudokuarray = outcomearray.Outcomes;
+            }
+            else
+            {
+                foreach (var item in outcomearray.OutcomesList)
                 {
-                    sudokuarray = arraylists.Outcomes;
-                    goto end;
-                }
-
-                for (int i = 1; i <= size; i++)
-                {
-                    sn = arraylists.Sudokulist.Sudokus.Find(x => x.Number == i);
-                    uc.UpdateValues(arraylists.Outcomes, sn);
-                    var arraylist = uc.FillArray2Options(sn, arraylists.Outcomes, 2);
-                    foreach (var item in arraylist)
+                    uc.Filling(item);
+                    if (item.Solved)
                     {
-                        var outcomelist = new OutcomeList(item);
-                        arraylists.OutcomesList.Add(outcomelist);
-                    }
-                }
 
-                // first time 50%
-                foreach (var item in arraylists.OutcomesList)
-                {
-                    uc.CreateList(item);
-                    for (int i = 1; i <= size; i++)
-                    {
-                        sn = item.Sudokulist.Sudokus.Find(x => x.Number == i);
-                        uc.UpdateValues(item.Outcomes, sn);
-                    }
-
-                    solved = uc.Filling(item);
-
-                    if (solved)
-                    {
                         sudokuarray = item.Outcomes;
                         goto end;
                     }
-
-                    for (int i = 1; i <= size; i++)
-                    {
-                        sn = item.Sudokulist.Sudokus.Find(x => x.Number == i);
-                        uc.UpdateValues(item.Outcomes, sn);
-
-                        var arraylist = uc.FillArray2Options(sn, item.Outcomes, 2);
-                        foreach (var item2 in arraylist)
-                        {
-                            var outcomelist = new OutcomeList(item2);
-                            item.OutcomesList.Add(outcomelist);
-                        }
-
-                    }
-                    // second time 50%
+                    sum++;
+                }
+                foreach (var item in outcomearray.OutcomesList)
+                {
                     foreach (var item2 in item.OutcomesList)
                     {
-                        sw.Start();
-                        uc.CreateList(item2);
-                        for (int i = 1; i <= size; i++)
+                        uc.Filling(item2);
+                        if (item2.Solved)
                         {
-                            sn = item2.Sudokulist.Sudokus.Find(x => x.Number == i);
-                            uc.UpdateValues(item2.Outcomes, sn);
-                        }
 
-                        solved = uc.Filling(item2);
-                        if (solved)
-                        {
                             sudokuarray = item2.Outcomes;
                             goto end;
                         }
-
-                        for (int i = 1; i <= size; i++)
-                        {
-                            sn = item2.Sudokulist.Sudokus.Find(x => x.Number == i);
-                            uc.UpdateValues(item2.Outcomes, sn);
-                            var arraylist = uc.FillArray2Options(sn, item2.Outcomes, 2);
-                            foreach (var item3 in arraylist)
-                            {
-                                var outcomelist = new OutcomeList(item3);
-                                item2.OutcomesList.Add(outcomelist);
-                            }
-
-                        }
-
-                        // third time 50%
-                        foreach (var item3 in item2.OutcomesList)
-                        {
-                            uc.CreateList(item3);
-                            for (int i = 1; i <= size; i++)
-                            {
-                                sn = item3.Sudokulist.Sudokus.Find(x => x.Number == i);
-                                uc.UpdateValues(item3.Outcomes, sn);
-                            }
-
-                            solved = uc.Filling(item3);
-                            if (solved)
-                            {
-                                sudokuarray = item3.Outcomes;
-                                goto end;
-                            }
-
-                            for (int i = 1; i <= size; i++)
-                            {
-                                sn = item3.Sudokulist.Sudokus.Find(x => x.Number == i);
-                                uc.UpdateValues(item3.Outcomes, sn);
-
-                            }
-                            item3.Dispose();
-                        }
-
-                        item2.Dispose();
-                        sw.Stop();
-                        Console.WriteLine(sw.ElapsedMilliseconds);
-                        sw.Reset();
+                        sum++;
                     }
-                    item.Dispose();
                 }
-                if (!solved)
-                {
-                    Console.WriteLine("Not Possible");
-                    Console.ReadLine();
-                }
-                end:;
+
             }
+            end:
+
+
             vc.ConsoleSudokuDisplay(sudokuarray);
             Console.ReadLine();
         }
